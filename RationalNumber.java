@@ -1,17 +1,17 @@
-public class RationalNumber extends RealNumber
-{
+public class RationalNumber extends RealNumber{
   private int numerator, denominator;
   public RationalNumber(int nume, int deno){
-    super(0);
-    numerator = nume;
-    denominator = deno;
-    if (denominator == 0){
-      numerator = 0;
-      denominator = 1;
-    }
+      super(1.0);
+      numerator = nume;
+      denominator = deno;
+      this.reduce();
+      if (denominator == 0){
+        numerator = 0;
+        denominator = 1;
+      }
   }
   public double getValue(){
-    return numerator / denominator;
+    return (double)numerator / denominator;
   }
   public int getNumerator(){
     return numerator;
@@ -20,13 +20,22 @@ public class RationalNumber extends RealNumber
     return denominator;
   }
   public RationalNumber reciprocal(){
-    return new RationalNumber(denominator,numerator);
+      RationalNumber newN = new RationalNumber(denominator,numerator);
+      return newN;
   }
   public boolean equals(RationalNumber other){
-    return this.numerator == other.numerator && this.denominator == other.denominator;
+    return (this.getNumerator() == other.getNumerator() && this.getDenominator()==other.getDenominator());
   }
   public String toString(){
-    return "" + numerator + "/" + denominator;
+      if (denominator == 1) {
+        return "" + numerator;
+      }
+      if (numerator == 0) {
+          return "0";
+      }
+      else{
+          return "" + numerator + "/"+denominator;
+      }
   }
   private static int gcd(int a, int b){
     int newA = a;
@@ -45,27 +54,20 @@ public class RationalNumber extends RealNumber
     return 1;
   }
   private void reduce(){
-    int gcd = gcd(this.numerator,this.denominator);
-    numerator = numerator / gcd;
-    denominator = denominator / gcd;
+      int gcD = gcd(numerator,denominator);
+      numerator = numerator / gcD;
+      denominator = denominator / gcD;
   }
   public RationalNumber multiply(RationalNumber other){
-    return new RationalNumber(this.numerator * other.numerator,this.denominator * other.denominator);
+    return new RationalNumber(numerator*other.numerator,denominator*other.denominator);
   }
   public RationalNumber divide(RationalNumber other){
-    RationalNumber reciprocal = other.reciprocal();
-    return new RationalNumber(this.numerator * reciprocal.numerator,this.denominator * reciprocal.denominator);
+    return this.multiply(other.reciprocal());
   }
   public RationalNumber add(RationalNumber other){
-    int nume1 = this.numerator * other.denominator;
-    int deno1 = this.denominator * other.denominator;
-    int nume2 = other.numerator * this.denominator;
-    return new RationalNumber(nume1 + nume2,deno1);
+    return new RationalNumber (numerator*other.denominator+other.numerator*denominator,denominator*other.denominator);
   }
   public RationalNumber subtract(RationalNumber other){
-    int nume1 = this.numerator * other.denominator;
-    int deno1 = this.denominator * other.denominator;
-    int nume2 = other.numerator * this.denominator;
-    return new RationalNumber(nume1 - nume2,deno1);
+    return new RationalNumber (numerator*other.denominator-other.numerator*denominator,denominator*other.denominator);
   }
 }
